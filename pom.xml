@@ -15,6 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>21</java.version>
+		<jooq.version>3.19.21</jooq.version>
 		<postgresql.version>42.7.4</postgresql.version>
 		<projectlombok.version>1.18.36</projectlombok.version>
 		<flyway-database-postgresql.version>11.7.0</flyway-database-postgresql.version>
@@ -112,8 +113,47 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<version>${jooq.version}</version>
+				<executions>
+					<execution>
+						<id>generate-postgres</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<jdbc>
+								<driver>${datasource.driver}</driver>
+								<url>${datasource.jdbcUrl}</url>
+								<user>${datasource.username}</user>
+								<password>${datasource.password}</password>
+							</jdbc>
+							<generator>
+								<database>
+									<name>
+										org.jooq.meta.postgres.PostgresDatabase
+									</name>
+									<includes>.*</includes>
+									<excludes/>
+									<inputSchema>public</inputSchema>
+								</database>
+								<generate>
+									<pojos>true</pojos>
+									<pojosEqualsAndHashCode>true</pojosEqualsAndHashCode>
+									<javaTimeTypes>true</javaTimeTypes>
+									<fluentSetters>true</fluentSetters>
+								</generate>
+								<target>
+									<packageName>ru.prytkovv.model</packageName>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-
 	</build>
-
 </project>
